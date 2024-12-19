@@ -1,0 +1,87 @@
+sensor:
+  - platform: uptime
+    name: "Uptime Sensor"
+    id: uptime_sensor
+    entity_category: diagnostic
+    internal: true
+  - platform: wifi_signal
+    name: "WiFi Signal dB"
+    id: wifi_signal_db
+    update_interval: 60s
+    entity_category: "diagnostic"
+  - platform: copy
+    source_id: wifi_signal_db
+    name: "WiFi Signal Percent"
+    filters:
+      - lambda: return min(max(2 * (x + 100.0), 0.0), 100.0);
+    unit_of_measurement: "%"
+    entity_category: "diagnostic"
+    device_class: ""
+
+binary_sensor:
+  - platform: status
+    name: "Status"
+    icon: mdi:check-network-outline
+    entity_category: diagnostic
+
+text_sensor:
+  - platform: wifi_info
+    ip_address:
+      name: "IP Address"
+      icon: mdi:ip-network
+      entity_category: diagnostic
+    ssid:
+      name: "Connected SSID"
+      icon: mdi:wifi-strength-2
+      entity_category: diagnostic
+    mac_address:
+      name: "Mac Address"
+      icon: mdi:network-pos
+      entity_category: diagnostic
+  - platform: template
+    name: 'Last Restart'
+    id: device_last_restart
+    icon: mdi:clock
+    entity_category: diagnostic
+  - platform: template
+    name: "Uptime"
+    entity_category: diagnostic
+    lambda: |-
+      int seconds = (id(uptime_sensor).state);
+      int days = seconds / (24 * 3600);
+      seconds = seconds % (24 * 3600);
+      int hours = seconds / 3600;
+      seconds = seconds % 3600;
+      int minutes = seconds /  60;
+      seconds = seconds % 60;
+      if ( days > 3650 ) {
+        return { "Starting up" };
+      } else if ( days ) {
+        return { (String(days) +"d " + String(hours) +"h " + String(minutes) +"m "+ String(seconds) +"s").c_str() };
+      } else if ( hours ) {
+        return { (String(hours) +"h " + String(minutes) +"m "+ String(seconds) +"s").c_str() };
+      } else if ( minutes ) {
+        return { (String(minutes) +"m "+ String(seconds) +"s").c_str() };
+      } else {
+        return { (String(seconds) +"s").c_str() };
+      }
+    icon: mdi:clock-start
+
+time:
+  - platform: sntp
+    id: sntp_time
+    timezone: ""
+    update_interval: 6h
+    servers: 
+      - "0.pool.ntp.org"
+      - "1.pool.ntp.org"
+      - "2.pool.ntp.org"
+    on_time_sync:
+      then:
+        - if:
+            condition:
+              lambda: 'return id(device_last_restart).state == "";'
+            then:
+              - text_sensor.template.publish:
+                  id: device_last_restart
+                  state: !lambda 'return id(sntp_time).now().strftime("%a %d %b %Y - %I:%M:%S %p");'
