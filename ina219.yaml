@@ -1,0 +1,37 @@
+sensor:
+  - platform: ina219
+    i2c_id: ${bus_id}
+    address: 0x40
+    shunt_resistance: 0.1 ohm
+    current:
+      name: "Current"
+    power:
+      name: "Power"
+      id: power_sensor
+      accuracy_decimals: 4
+    bus_voltage:
+      name: "Voltage"
+    max_voltage: 5.5V
+    max_current: 3.2A
+    update_interval: 10s
+  - platform: total_daily_energy
+    name: 'Total Daily Energy'
+    power_id: power_sensor
+    unit_of_measurement: 'kWh'
+    state_class: total_increasing
+    device_class: energy
+    accuracy_decimals: 3
+    filters:
+      # Multiplication factor from W to kW is 0.001
+      - multiply: 0.001
+  - platform: integration
+    sensor: power_sensor
+    name: "Total Energy"
+    time_unit: h
+    filters:
+      # Multiplication factor from W to kW is 0.001
+      - multiply: 0.001
+    unit_of_measurement: 'kWh'
+    state_class: total_increasing
+    device_class: energy
+    accuracy_decimals: 3
