@@ -6,8 +6,8 @@ globals:
   initial_value: '1'
 
 uart:
-  tx_pin: GPIO01
-  rx_pin: GPIO03
+  tx_pin: ${tx_pin}
+  rx_pin: ${rx_pin}
   baud_rate: 9600
   debug:
     direction: BOTH
