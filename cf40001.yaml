@@ -1,0 +1,197 @@
+globals:
+- id: uart_code_queue
+  type: 'std::vector<std::string>'
+- id: uart_interpret_response
+  type: 'int'
+  initial_value: '1'
+
+uart:
+  tx_pin: GPIO01
+  rx_pin: GPIO03
+  baud_rate: 9600
+  debug:
+    direction: BOTH
+    dummy_receiver: true
+    after:
+      delimiter: "\r\n"
+    sequence:
+      - lambda: |-
+          int sensorID=0;
+          float sensorTEMP=0;
+
+          UARTDebug::log_string(direction, bytes);
+
+          if (id(uart_interpret_response) == 1) {
+            std::string str(bytes.begin(), bytes.end());
+          
+            if (str.at(7) == '0' ) {
+              id(radar_occupancy).publish_state(false);
+            } else if (str.at(7) == '1') {
+              id(radar_occupancy).publish_state(true);
+            }
+          }
+
+binary_sensor:
+  - platform: template
+    name: "Radar Occupancy"
+    id: radar_occupancy
+    device_class: occupancy
+
+number:
+  - platform: template
+    id: min_detection_distance
+    name: "Min Detection Distance"
+    icon: mdi:arrow-collapse-left
+    entity_category: config
+    min_value: 0.6
+    max_value: 1.0
+    initial_value: 0.6
+    optimistic: true
+    step: 0.1
+    restore_value: true
+    unit_of_measurement: m
+    mode: box
+  - platform: template
+    id: max_detection_distance
+    name: "Max Detection Distance"
+    icon: mdi:arrow-collapse-right
+    entity_category: config
+    min_value: 1.1
+    max_value: 12
+    initial_value: 6
+    optimistic: true
+    step: 0.1
+    restore_value: true
+    unit_of_measurement: m
+    mode: box
+  - platform: template
+    id: trigger_distance
+    name: "Trigger Distance"
+    icon: mdi:arrow-collapse-horizontal
+    entity_category: config
+    min_value: 0.0
+    max_value: 12
+    initial_value: 6
+    optimistic: true
+    step: 0.1
+    restore_value: true
+    unit_of_measurement: m
+    mode: box
+  - platform: template
+    id: trigger_sensitivity
+    name: "Trigger Sensitivity"
+    icon: mdi:target-variant
+    entity_category: config
+    min_value: 0
+    max_value: 9
+    initial_value: 5
+    optimistic: true
+    step: 1
+    restore_value: true
+    mode: slider
+  - platform: template
+    id: hold_sensitivity
+    name: "Hold Sensitivity"
+    icon: mdi:target-variant
+    entity_category: config
+    min_value: 0
+    max_value: 9
+    initial_value: 7
+    optimistic: true
+    step: 1
+    restore_value: true
+    mode: slider
+  - platform: template
+    id: confirmation_latency
+    name: "Confirmation Latency"
+    icon: mdi:clock-start
+    entity_category: config
+    min_value: 0.0
+    max_value: 100.0
+    initial_value: 0.05
+    optimistic: true
+    step: 0.05
+    restore_value: true
+    unit_of_measurement: s
+    mode: box
+  - platform: template
+    id: disappearance_latency
+    name: "Disappearance Latency"
+    icon: mdi:clock-end
+    entity_category: config
+    min_value: 0.5
+    max_value: 1500.0
+    initial_value: 15.0
+    optimistic: true
+    step: 0.5
+    restore_value: true
+    unit_of_measurement: s
+    mode: box
+  - platform: template
+    id: blocking_time
+    name: "Blocking Time"
+    icon: mdi:clock
+    entity_category: config
+    min_value: 0.1
+    max_value: 255.0
+    initial_value: 1.0
+    optimistic: true
+    step: 0.1
+    restore_value: true
+    unit_of_measurement: s
+    mode: box
+
+script:
+- id: uart_transmitter_queue
+  mode: single
+  then:
+    - globals.set: 
+        id: uart_interpret_response
+        value: '0'
+    - while:
+        condition:
+          lambda: 'return !id(uart_code_queue).empty();'
+        then:
+          - uart.write: !lambda |-
+                std::string uart_code = id(uart_code_queue).front();
+                id(uart_code_queue).erase(id(uart_code_queue).begin());
+                return std::vector<unsigned char>(uart_code.begin(), uart_code.end());
+          - delay: 1500ms
+    - globals.set: 
+        id: uart_interpret_response
+        value: '1'
+
+button:
+  - platform: template
+    name: "Save Configuration"
+    id: save_configuration
+    entity_category: config
+    on_press:
+      - lambda: |-
+          id(uart_code_queue).push_back("sensorStop");
+          std::string ms_range = "setRange " + to_string(id(min_detection_distance).state) + " " + to_string(id(max_detection_distance).state);
+          id(uart_code_queue).push_back(ms_range);
+          std::string ms_trig = "setTrigRange " + to_string(id(trigger_distance).state);
+          id(uart_code_queue).push_back(ms_trig);          
+          std::string ms_sensitivity = "setSensitivity " + to_string(id(hold_sensitivity).state) + " " + to_string(id(trigger_sensitivity).state);
+          id(uart_code_queue).push_back(ms_sensitivity);
+          std::string ms_latency = "setLatency " + to_string(id(confirmation_latency).state) + " " + to_string(id(disappearance_latency).state);
+          id(uart_code_queue).push_back(ms_latency);
+          std::string ms_inhibit = "setInhibit " + to_string(id(blocking_time).state);
+          id(uart_code_queue).push_back(ms_inhibit);
+          id(uart_code_queue).push_back("saveConfig");
+          id(uart_code_queue).push_back("sensorStart");
+      - script.execute: uart_transmitter_queue
+  - platform: template
+    name: "Get Configuration"
+    id: get_configuration
+    entity_category: config
+    on_press:
+      - lambda: |-
+          id(uart_code_queue).push_back("getRange");
+          id(uart_code_queue).push_back("getTrigRange");
+          id(uart_code_queue).push_back("getSensitivity");
+          id(uart_code_queue).push_back("getLatency");
+          id(uart_code_queue).push_back("getInhibit");
+          id(uart_code_queue).push_back("getUart");
+      - script.execute: uart_transmitter_queue
