@@ -4,7 +4,7 @@ light:
     pin: ${led_pin}
     num_leds: ${num_leds}
     rgb_order: ${rgb_order}
-    name: "Light"
+    name: "LEDs"
     effects:
       - adressable_flicker:
       - addressable_twinkle:
