@@ -1,6 +1,6 @@
 sensor:
   - platform: ina219
-    i2c_id: ${bus_id}
+    i2c_id: ${ina219_bus_id}
     address: 0x40
     shunt_resistance: 0.1 ohm
     current:

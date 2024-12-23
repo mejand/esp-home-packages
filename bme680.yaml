@@ -1,6 +1,6 @@
 sensor:
   - platform: bme680
-    i2c_id: ${bus_id}
+    i2c_id: ${bme_680_bus_id}
     temperature:
       name: "Temperature"
       oversampling: 16x
