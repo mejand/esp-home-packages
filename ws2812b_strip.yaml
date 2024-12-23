@@ -5,3 +5,9 @@ light:
     num_leds: ${num_leds}
     rgb_order: ${rgb_order}
     name: "Light"
+    effects:
+      - adressable_flicker:
+      - addressable_twinkle:
+      - addressable_scan:
+      - addressable_color_wipe:
+      - addressable_rainbow:
