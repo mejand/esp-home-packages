@@ -1,0 +1,6 @@
+sensor:
+  - platform: veml7700
+    address: 0x10
+    i2c_id: ${veml7700_bus_id}
+    update_interval: 10s
+    ambient_light: "Ambient light"
