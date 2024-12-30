@@ -6,7 +6,8 @@ light:
     rgb_order: ${rgb_order}
     name: "LEDs"
     effects:
-      - addressable_flicker:
+      - pulse:
+      - fliker:
       - addressable_twinkle:
       - addressable_scan:
       - addressable_color_wipe:
