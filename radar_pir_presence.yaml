@@ -9,5 +9,5 @@ binary_sensor:
       } else if (!id(radar_presence).state) {
         return false;
       } else {
-        return id(combined_presence).state
+        return id(combined_presence).state;
       }
