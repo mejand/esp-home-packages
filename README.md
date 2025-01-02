@@ -10,3 +10,4 @@ This repo contains reuseable packages for ESP Home configurations. See also http
 - HLK LD2410: provides sensors and configuration parameters for HLK LD2410 radar presence sensor
 - VEML7700: provides an ambient light sensor
 - PIR: provides an occupancy sensor for a PIR connected to an input pin
+- Presence: provides a combines presence sensor based on a PIR and Radar sensor

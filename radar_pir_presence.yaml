@@ -1,0 +1,13 @@
+binary_sensor:
+  - platform: template
+    name: "Presence"
+    id: combined_presence
+    device_class: occupancy
+    lambda: |-
+      if (id(radar_presence).state && id(pir_movement).state) {
+        return true;
+      } else if (!id(radar_presence).state) {
+        return false;
+      } else {
+        return id(combined_presence).state
+      }
