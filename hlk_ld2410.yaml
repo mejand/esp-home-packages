@@ -19,7 +19,8 @@ binary_sensor:
       name: out pin presence status
   - platform: gpio
     pin: ${ld2410_out_pin}
-    name: GPIO Presence
+    name: Radar Presence
+    id: radar_presence
     device_class: occupancy
 
 sensor:

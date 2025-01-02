@@ -1,0 +1,6 @@
+binary_sensor:
+  - platform: gpio
+    pin: ${pir_out_pin}
+    name: PIR Movement
+    id: pir_movement
+    device_class: movement
