@@ -4,3 +4,5 @@ binary_sensor:
     name: PIR Movement
     id: pir_movement
     device_class: motion
+    filters:
+      - delayed_off: 60s
