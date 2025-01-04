@@ -2,9 +2,9 @@
 This repo contains reuseable packages for ESP Home configurations. See also https://esphome.io/components/packages.html.
 
 ## Included Packages
-- Utils: provides various diagnostics like uptime, mac adress, connection strength, etc.
-- INA219: provides voltage and power sensors
-- BME680: provides temperature, pressure, humidity and air quality sensors
+- [Utils](#Utils): provides various diagnostics like uptime, mac adress, connection strength, etc.
+- [INA219](#INA219): provides voltage and power sensors
+- [BME680](#BME680): provides temperature, pressure, humidity and air quality sensors
 - DF Robot CF4001: provides sensors and configuration parameters for the DF Robot CF4001 mmWave Radar Presence Sensor
 - WS2812B: provides controls for a led strip
 - HLK LD2410: provides sensors and configuration parameters for HLK LD2410 radar presence sensor
@@ -12,3 +12,57 @@ This repo contains reuseable packages for ESP Home configurations. See also http
 - PIR: provides an occupancy sensor for a PIR connected to an input pin
 - Presence: provides a combines presence sensor based on a PIR and Radar sensor
 - VELUX cover: provides a cover entity for controlling a Velux remote with ESP8266
+
+### Utils
+#### Provides
+- Uptime Sensor
+- WiFi Signal (dB and %)
+- Status
+- IP Address
+- Connected SSID
+- Mac Address
+- Last Restart
+- Uptime
+
+#### Requires
+- None
+
+### INA219
+#### Provides
+- Current
+- Power
+- Voltage
+- Total Daily Energy
+- Total Energy
+
+#### Requires
+- I2C Bus: "ina219_bus_id"
+
+### BME680
+#### Provides
+- Temperature
+- Pressure
+- Humidity
+- Gas Resistance
+- Indoor Air Quality
+- IAQ Classification
+
+#### Requires
+- I2C Bus: "bme_680_bus_id"
+
+## Example Useage
+The following code snippet will add the Utils and WS2812B packages to a configuration when placed in the configuration.yaml of an ESP Home controlled device:
+
+```yaml
+substitutions:
+  led_pin: "GPIO32"
+  num_leds: "24"
+  rgb_order: "GRB"
+
+packages:
+  remote_packages:
+    url: https://github.com/mejand/esp-home-packages
+    files: [utils.yaml, ws2812b_strip.yaml]
+    ref: main
+    refresh: 5s
+```
