@@ -7,7 +7,7 @@ light:
     name: "LEDs"
     effects:
       - pulse:
-      - fliker:
+      - flicker:
       - addressable_twinkle:
       - addressable_scan:
       - addressable_color_wipe:
