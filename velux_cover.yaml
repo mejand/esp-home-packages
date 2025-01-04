@@ -1,0 +1,46 @@
+esp8266:
+  early_pin_init: false
+
+switch:
+  - platform: gpio
+    id: blind_down
+    restore_mode: ALWAYS_ON
+    pin:
+      number: ${cover_down_pin}
+      inverted: true
+    interlock: [blind_up, blind_stop]
+  - platform: gpio
+    id: blind_up
+    restore_mode: ALWAYS_ON
+    pin:
+      number: ${cover_up_pin}
+      inverted: true
+    interlock: [blind_down, blind_stop]
+  - platform: gpio
+    id: blind_stop
+    restore_mode: ALWAYS_ON
+    pin:
+      number: ${cover_stop_pin}
+      inverted: true
+    interlock: [blind_down, blind_up]
+
+cover:
+  - platform: template
+    name: "Cover"
+    open_action:
+      then:
+        - switch.turn_on: blind_up
+        - delay: 250ms
+        - switch.turn_off: blind_up
+    close_action:
+      then:
+        - switch.turn_on: blind_down
+        - delay: 250ms
+        - switch.turn_off: blind_down
+    stop_action:
+      then:
+        - switch.turn_on: blind_stop
+        - delay: 250ms
+        - switch.turn_off: blind_stop
+    optimistic: true
+    assumed_state: true

@@ -11,3 +11,4 @@ This repo contains reuseable packages for ESP Home configurations. See also http
 - VEML7700: provides an ambient light sensor
 - PIR: provides an occupancy sensor for a PIR connected to an input pin
 - Presence: provides a combines presence sensor based on a PIR and Radar sensor
+- VELUX cover: provides a cover entity for controlling a Velux remote with ESP8266
