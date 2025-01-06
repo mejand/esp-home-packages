@@ -5,6 +5,7 @@ This repo contains reuseable packages for ESP Home configurations. See also http
 - [Utils](#Utils): provides various diagnostics like uptime, mac adress, connection strength, etc.
 - [INA219](#INA219): provides voltage and power sensors
 - [BME680](#BME680): provides temperature, pressure, humidity and air quality sensors
+- [BME680 - BSEC](#BME680-BSEC): provides temperature, pressure, humidity and air quality sensors using the Bosch BSEC library
 - DF Robot CF4001: provides sensors and configuration parameters for the DF Robot CF4001 mmWave Radar Presence Sensor
 - WS2812B: provides controls for a led strip
 - HLK LD2410: provides sensors and configuration parameters for HLK LD2410 radar presence sensor
@@ -44,11 +45,27 @@ This repo contains reuseable packages for ESP Home configurations. See also http
 - Pressure
 - Humidity
 - Gas Resistance
-- Indoor Air Quality
+- Indoor Air Quality (IAQ)
 - IAQ Classification
 
 #### Requires
 - I2C Bus: "bme_680_bus_id"
+
+### BME680 - BSEC
+#### Provides
+- Temperature
+- Pressure
+- Humidity
+- Gas Resistance
+- Indoor Air Quality (IAQ)
+- IAQ Classification
+- IAQ Accuracy
+- CO2 Equivalent
+- Breath VOC Equivalent
+
+#### Requires
+- I2C Bus: "bme_680_bus_id"
+- Temperature Offset: "bme680_temperature_offset"
 
 ## Example Useage
 The following code snippet will add the Utils and WS2812B packages to a configuration when placed in the configuration.yaml of an ESP Home controlled device:
