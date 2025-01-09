@@ -13,6 +13,7 @@ This repo contains reuseable packages for ESP Home configurations. See also http
 - PIR: provides an occupancy sensor for a PIR connected to an input pin
 - Presence: provides a combines presence sensor based on a PIR and Radar sensor
 - VELUX cover: provides a cover entity for controlling a Velux remote with ESP8266
+- [APDS9960](#APDS9960): provides proximity and gesture sensors as well as a light level sensor
 
 ### Utils
 #### Provides
@@ -52,6 +53,9 @@ This repo contains reuseable packages for ESP Home configurations. See also http
 - I2C Bus: "bme_680_bus_id"
 
 ### BME680 - BSEC
+> [!NOTE]
+> The BSEC2 library is only available for use after accepting its software license agreement. By enabling this component in your configuration, you are explicitly agreeing to the terms of the [BSEC license agreement](https://www.bosch-sensortec.com/media/boschsensortec/downloads/software/bme688_development_software/2023_04/license_terms_bme688_bme680_bsec.pdf). Note that the license forbids distribution of any compiled firmware binaries that include this component.
+
 #### Provides
 - Temperature
 - Pressure
@@ -66,6 +70,18 @@ This repo contains reuseable packages for ESP Home configurations. See also http
 #### Requires
 - I2C Bus: "bme_680_bus_id"
 - Temperature Offset: "bme680_temperature_offset"
+
+### APDS9960
+#### Provides
+- Clear (Light Level)
+- Proximity
+- Up Movement (Gesture)
+- Down Movement (Gesture)
+- Left Movement (Gesture)
+- Right Movement (Gesture)
+
+#### Requires
+- I2C Bus: "apds9960_bus_id"
 
 ## Example Useage
 The following code snippet will add the Utils and WS2812B packages to a configuration when placed in the configuration.yaml of an ESP Home controlled device:
