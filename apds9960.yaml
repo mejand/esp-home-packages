@@ -10,8 +10,3 @@ sensor:
   - platform: apds9960
     type: PROXIMITY
     name: "Proximity"
-
-binary_sensor:
-  - platform: apds9960
-    direction: UP
-    name: "Up Movement"
