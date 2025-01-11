@@ -15,12 +15,3 @@ binary_sensor:
   - platform: apds9960
     direction: UP
     name: "Up Movement"
-  - platform: apds9960
-    direction: DOWN
-    name: "Down Movement"
-  - platform: apds9960
-    direction: LEFT
-    name: "Left Movement"
-  - platform: apds9960
-    direction: RIGHT
-    name: "Right Movement"
