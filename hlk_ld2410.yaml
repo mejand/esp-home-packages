@@ -10,8 +10,7 @@ ld2410:
 binary_sensor:
   - platform: ld2410
     has_target:
-      name: Radar Presence
-      id: radar_presence
+      name: Radar Target
     has_moving_target:
       name: Moving Target
     has_still_target:
@@ -20,7 +19,8 @@ binary_sensor:
       name: out pin presence status
   - platform: gpio
     pin: ${ld2410_out_pin}
-    name: LD2410 Out Pin
+    name: Radar Presence
+    id: radar_presence
 
 sensor:
   - platform: ld2410
